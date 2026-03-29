@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAKÛ — Live A/V feat. Elisalien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&family=Zen+Kaku+Gothic+New:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --violet: #8b5cf6;
+  --violet-deep: #5b21b6;
+  --violet-dark: #1a0a3e;
+  --cyan: #22d3ee;
+  --cyan-dim: #0e7490;
+  --rose: #f472b6;
+  --rose-hot: #ec4899;
+  --rose-dim: #9d174d;
+  --bg-dark: #08080f;
+  --bg-panel: rgba(12, 12, 25, 0.8);
+  --bg-panel-border: rgba(139, 92, 246, 0.15);
+  --text-primary: #e2e8f0;
+  --text-dim: #94a3b8;
+  --text-bright: #f8fafc;
+  --font-pixel: 'Orbitron', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'Zen Kaku Gothic New', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-dark);
+  padding-top: 52px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── CRT SCANLINES ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── NOISE GRAIN ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9998;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--violet-deep); border-radius: 3px; }
+
+/* ── KEYFRAMES ── */
+@keyframes glitch-text {
+  0%, 100% { text-shadow: 2px 0 var(--cyan), -2px 0 var(--rose); }
+  25% { text-shadow: -2px -1px var(--cyan), 2px 1px var(--rose); }
+  50% { text-shadow: 1px 2px var(--cyan), -1px -2px var(--rose); }
+  75% { text-shadow: -1px 1px var(--rose), 1px -1px var(--cyan); }
+}
+
+@keyframes flicker {
+  0%, 91%, 93%, 95%, 97%, 100% { opacity: 1; }
+  92% { opacity: 0.8; }
+  94% { opacity: 0.9; }
+  96% { opacity: 0.85; }
+}
+
+@keyframes scan {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(139, 92, 246, 0.15); }
+  50% { border-color: rgba(139, 92, 246, 0.35); }
+}
+
+/* ── LAYOUT ── */
+.page-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+section {
+  padding: 80px 0;
+  opacity: 0;
+  animation: fade-up 0.8s ease forwards;
+}
+section:nth-child(1) { animation-delay: 0.1s; }
+section:nth-child(2) { animation-delay: 0.3s; }
+section:nth-child(3) { animation-delay: 0.4s; }
+section:nth-child(4) { animation-delay: 0.5s; }
+section:nth-child(5) { animation-delay: 0.6s; }
+section:nth-child(6) { animation-delay: 0.7s; }
+section:nth-child(7) { animation-delay: 0.8s; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 40px 0;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(139,92,246,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(236,72,153,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 50%, rgba(34,211,238,0.05) 0%, transparent 50%);
+  z-index: 0;
+}
+
+.hero-bg::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(34,211,238,0.15), transparent);
+  animation: scan 6s linear infinite;
+}
+
+.hero-content { position: relative; z-index: 1; }
+
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--cyan);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: flicker 4s infinite;
+}
+
+.hero-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(1.8rem, 5.5vw, 3.4rem);
+  letter-spacing: 0.08em;
+  font-weight: 900;
+  color: var(--text-bright);
+  animation: glitch-text 3s infinite;
+  margin-bottom: 8px;
+}
+
+.hero-x { color: var(--rose-hot); }
+
+.hero-feat {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.6rem, 1.3vw, 0.8rem);
+  font-weight: 400;
+  color: var(--cyan);
+  letter-spacing: 0.12em;
+  margin-top: 4px;
+}
+
+.hero-subtitle {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+  font-weight: 500;
+  color: var(--violet);
+  letter-spacing: 0.15em;
+  margin-top: 16px;
+  margin-bottom: 40px;
+}
+
+.hero-tagline {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--text-dim);
+  max-width: 620px;
+  line-height: 1.8;
+  margin: 0 auto 48px;
+}
+
+.hero-tagline em {
+  color: var(--rose);
+  font-style: normal;
+}
+
+.hero-visual {
+  width: 100%;
+  max-width: 700px;
+  aspect-ratio: 16/7;
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 4px;
+  background: var(--bg-panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  overflow: hidden;
+  animation: pulse-border 4s ease infinite;
+}
+
+.hero-visual-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  opacity: 0.5;
+}
+
+/* ── NAV DOTS ── */
+.nav-dots {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(139,92,246,0.2);
+  border: 1px solid rgba(139,92,246,0.4);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.nav-dot:hover, .nav-dot.active {
+  background: var(--violet);
+  box-shadow: 0 0 10px rgba(139,92,246,0.5);
+}
+
+/* ── SECTION TITLES ── */
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--cyan);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.85rem, 2.2vw, 1.2rem);
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 32px;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--violet), var(--rose), var(--cyan));
+  margin-top: 12px;
+}
+
+/* ── CONCEPT ── */
+.concept-text {
+  max-width: 700px;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.concept-text strong {
+  color: var(--rose);
+  font-weight: 400;
+}
+
+.concept-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.keyword {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 6px 14px;
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 2px;
+  color: var(--text-dim);
+  background: var(--bg-panel);
+  transition: all 0.3s;
+}
+
+.keyword:hover {
+  border-color: var(--violet);
+  color: var(--violet);
+  box-shadow: 0 0 12px rgba(139,92,246,0.2);
+}
+
+/* ── ARTISTS ── */
+.artists-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.artist-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 4px;
+  padding: 28px 24px;
+  position: relative;
+  transition: border-color 0.3s;
+}
+
+.artist-card:hover { border-color: var(--violet); }
+
+.artist-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+
+.artist-card:first-child::before { background: linear-gradient(90deg, var(--rose), transparent); }
+.artist-card:last-child::before { background: linear-gradient(90deg, var(--cyan), transparent); }
+
+.artist-img-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: rgba(139,92,246,0.04);
+  border: 1px dashed rgba(139,92,246,0.15);
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.artist-img-placeholder span {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  opacity: 0.4;
+}
+
+.artist-name {
+  font-family: var(--font-pixel);
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.artist-card:first-child .artist-name { color: var(--rose); }
+.artist-card:last-child .artist-name { color: var(--cyan); }
+
+.artist-role {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.artist-bio {
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.artist-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.artist-link {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 4px 10px;
+  border: 1px solid rgba(139,92,246,0.15);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.artist-link:hover {
+  color: var(--cyan);
+  border-color: var(--cyan-dim);
+}
+
+/* ── VIDEO ── */
+.video-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.video-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.video-card:hover { border-color: var(--violet); }
+.video-card.featured { grid-column: 1 / -1; }
+
+.video-embed {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: none;
+  display: block;
+}
+
+.video-placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: rgba(139,92,246,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-placeholder span {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  opacity: 0.4;
+}
+
+.video-info { padding: 14px 18px; }
+
+.video-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 4px;
+}
+
+.video-title {
+  font-weight: 400;
+  font-size: 0.95rem;
+}
+
+/* ── DATES ── */
+.dates-list {
+  list-style: none;
+  max-width: 620px;
+}
+
+.dates-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(139,92,246,0.07);
+  transition: all 0.3s;
+}
+
+.dates-list li:hover { padding-left: 8px; border-color: rgba(139,92,246,0.2); }
+
+.date-when {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--cyan);
+  min-width: 56px;
+  white-space: nowrap;
+}
+
+.date-where { font-size: 0.95rem; }
+
+.date-tag {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  color: var(--rose);
+  padding: 2px 8px;
+  border: 1px solid var(--rose-dim);
+  border-radius: 2px;
+  margin-left: auto;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+
+/* ── NEWS ── */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.news-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 4px;
+  padding: 24px;
+  transition: border-color 0.3s;
+}
+
+.news-card:hover { border-color: var(--violet); }
+
+.news-badge {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.news-badge.award { background: rgba(236,72,153,0.12); color: var(--rose); }
+.news-badge.release { background: rgba(34,211,238,0.12); color: var(--cyan); }
+.news-badge.residency { background: rgba(139,92,246,0.12); color: var(--violet); }
+
+.news-text { font-size: 0.88rem; }
+.news-text strong { font-weight: 400; color: var(--text-bright); }
+
+/* ── PARTNERS ── */
+.sub-heading {
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  margin-top: 48px;
+  margin-bottom: 16px;
+}
+
+.partners-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.partner-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  padding: 6px 14px;
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.partner-tag:hover {
+  border-color: var(--violet);
+  color: var(--text-primary);
+}
+
+.partners-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+a.partner-detail {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.partner-detail {
+  background: var(--bg-panel);
+  border: 1px solid var(--bg-panel-border);
+  border-radius: 4px;
+  padding: 20px;
+  transition: border-color 0.3s;
+}
+
+.partner-detail:hover { border-color: var(--violet); cursor: pointer; }
+
+.partner-detail-name {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-bright);
+  margin-bottom: 8px;
+  transition: color 0.3s;
+}
+
+a.partner-detail:hover .partner-detail-name {
+  color: var(--cyan);
+}
+
+a.partner-detail:hover .partner-detail-name::after {
+  content: ' \2197';
+  font-size: 0.65rem;
+}
+
+.partner-detail-role {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* Festivals joués */
+.past-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.past-date {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  padding: 6px 14px;
+  border: 1px solid rgba(139,92,246,0.08);
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+/* ── CONTACT ── */
+.contact-section { padding-bottom: 100px; }
+
+.contact-grid {
+  display: flex;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.contact-block h4 {
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--violet);
+  margin-bottom: 12px;
+}
+
+.contact-block a {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 3px 0;
+  transition: color 0.3s;
+}
+
+.contact-block a:hover { color: var(--cyan); }
+
+.footer-line {
+  text-align: center;
+  padding: 40px 0;
+  border-top: 1px solid rgba(139,92,246,0.08);
+}
+
+.footer-line span {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--text-dim);
+  opacity: 0.4;
+}
+
+/* ── DIVIDER ── */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--violet-deep), var(--rose-dim), transparent);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .page-wrapper { padding: 0 16px; }
+  section { padding: 60px 0; }
+  .nav-dots { display: none; }
+  .artists-grid { grid-template-columns: 1fr; }
+  .video-grid { grid-template-columns: 1fr; }
+  .contact-grid { flex-direction: column; gap: 24px; }
+}
+
+/* ── STICKY TAB NAV ── */
+.tab-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: rgba(8, 8, 15, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.18);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tab-nav-logo {
+  position: absolute;
+  left: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--text-dim);
+  opacity: 0.4;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+.tab-nav-inner {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  height: 100%;
+}
+.tab-btn {
+  font-family: var(--font-pixel);
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0 32px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  position: relative;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active {
+  color: var(--violet);
+  border-bottom-color: var(--violet);
+}
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px; height: 3px;
+  background: linear-gradient(90deg, var(--violet), var(--rose));
+  filter: blur(3px);
+  opacity: 0.6;
+}
+/* ── TAB CONTENT ── */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ── INTENTION PAGE ── */
+.intention-header {
+  padding: 72px 0 40px;
+  border-bottom: 1px solid rgba(139,92,246,0.1);
+  margin-bottom: 64px;
+}
+.intention-meta {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--cyan);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+.intention-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.9rem, 2.4vw, 1.3rem);
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 8px;
+}
+.intention-title::after {
+  content: '';
+  display: block;
+  width: 80px; height: 2px;
+  background: linear-gradient(90deg, var(--violet), var(--rose), var(--cyan));
+  margin-top: 14px;
+}
+.intention-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--violet);
+  letter-spacing: 0.1em;
+  margin-top: 18px;
+}
+.intention-block { margin-bottom: 64px; }
+.intention-block-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--cyan);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+.intention-block-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.75rem, 1.8vw, 0.95rem);
+  font-weight: 700;
+  color: var(--text-bright);
+  margin-bottom: 24px;
+}
+.intention-block-title::after {
+  content: '';
+  display: block;
+  width: 40px; height: 1px;
+  background: var(--violet);
+  margin-top: 10px;
+  opacity: 0.5;
+}
+.intention-text {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.85;
+  max-width: 760px;
+  margin-bottom: 18px;
+}
+.intention-text strong { color: var(--rose); font-weight: 400; }
+.intention-text em { color: var(--cyan); font-style: normal; }
+.intention-fill {
+  background: rgba(139,92,246,0.04);
+  border: 1px dashed rgba(139,92,246,0.2);
+  border-radius: 4px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  max-width: 760px;
+}
+.intention-fill-label {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  color: var(--rose);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+.intention-fill-hint {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.7;
+  font-style: italic;
+  opacity: 0.65;
+}
+.intention-objectives {
+  list-style: none;
+  max-width: 760px;
+  margin: 16px 0;
+}
+.intention-objectives li {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(139,92,246,0.06);
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  line-height: 1.7;
+}
+.intention-objectives li::before {
+  content: '\25B9';
+  color: var(--violet);
+  font-size: 0.7rem;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.intention-tag-list {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px;
+}
+.intention-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  padding: 5px 12px;
+  border: 1px solid rgba(139,92,246,0.18);
+  border-radius: 2px;
+  color: var(--text-dim);
+  background: var(--bg-panel);
+}
+.intention-footer {
+  margin-top: 80px;
+  padding: 40px 0 80px;
+  border-top: 1px solid rgba(139,92,246,0.08);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.intention-sig {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  line-height: 2;
+  opacity: 0.65;
+}
+.intention-deadline {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--rose);
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+  text-align: right;
+}
+
+/* ── BETTER PHOTO SLOT ── */
+.artist-img-slot {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  position: relative;
+  background: rgba(139,92,246,0.04);
+  border: 1px dashed rgba(139,92,246,0.12);
+}
+.artist-img-slot img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.artist-img-slot .slot-label {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; pointer-events: none;
+}
+.artist-img-slot .slot-label span {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  color: var(--text-dim);
+  opacity: 0.3;
+  letter-spacing: 0.1em;
+}
+.artist-img-slot .slot-label::before {
+  content: '+';
+  font-size: 1.4rem;
+  color: var(--violet);
+  opacity: 0.15;
+  font-weight: 300;
+}
+
+@media (max-width: 700px) {
+  .tab-nav-logo { display: none; }
+  .tab-btn { padding: 0 16px; font-size: 0.5rem; letter-spacing: 0.1em; }
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY TAB NAV -->
+<header class="tab-nav" role="navigation" aria-label="Navigation principale">
+  <span class="tab-nav-logo">BAK&Ucirc; &mdash; Live A/V feat. Elisalien</span>
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" data-tab="dossier">Dossier artistique</button>
+    <button class="tab-btn" data-tab="intention">Note d&rsquo;intention</button>
+  </div>
+</header>
+
+
+
+<!-- NAV DOTS -->
+<nav class="nav-dots" id="nav-dots-dossier" aria-label="Navigation dossier">
+  <div class="nav-dot active" data-target="hero"></div>
+  <div class="nav-dot" data-target="concept"></div>
+  <div class="nav-dot" data-target="artists"></div>
+  <div class="nav-dot" data-target="video"></div>
+  <div class="nav-dot" data-target="dates"></div>
+  <div class="nav-dot" data-target="contact"></div>
+</nav>
+<nav class="nav-dots" id="nav-dots-intention" aria-label="Navigation note intention" style="display:none;">
+  <div class="nav-dot active" data-target="int-hero"></div>
+  <div class="nav-dot" data-target="int-lieu"></div>
+  <div class="nav-dot" data-target="int-artistique"></div>
+  <div class="nav-dot" data-target="int-travail"></div>
+  <div class="nav-dot" data-target="int-avancement"></div>
+</nav>
+
+<div class="tab-content active" id="tab-dossier">
+<div class="page-wrapper">
+
+  <!-- ═══════ HERO ═══════ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-label">&#9655; live audiovisuel</div>
+      <h1 class="hero-title">BAK&Ucirc; <span class="hero-x">feat.</span> Elisalien</h1>
+      <div class="hero-feat" style="font-family:var(--font-pixel);font-size:clamp(1rem,3vw,2rem);font-weight:900;color:var(--rose-hot);letter-spacing:0.12em;margin-top:6px;">PHASE(S)</div>
+      <div class="hero-feat" style="margin-top:10px;">live A/V</div>
+      <div class="hero-subtitle">[ deep dub/drum experience.exe ]</div>
+      <p class="hero-tagline">
+        Un live audiovisuel &eacute;volutif au rythme des sets, festivals, ambiances&hellip; Bak&ucirc; surprend toujours dans sa s&eacute;lection, m&ecirc;lant ses propres productions avec des musiques de producteur&middot;ices qui nourrissent son univers. &Eacute;galement artiste visuelle, Bak&ucirc; a d&eacute;velopp&eacute; en collaboration avec <em>Elisalien</em> un show A/V m&ecirc;lant leurs influences communes&nbsp;: la culture anime, cyberpunk, science-fiction&hellip;
+      </p>
+      <div class="hero-visual" style="padding:0;overflow:hidden;">
+        <img src="assets/vprojet.png" alt="Visuel projet" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <span class="hero-visual-text" style="display:none;">[ VISUEL PROJET &mdash; 1400&times;440px ]</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ CONCEPT ═══════ -->
+  <section id="concept">
+    <div class="section-tag">// 01 &mdash; concept</div>
+    <h2 class="section-title">LE PROJET</h2>
+
+    <p class="concept-text">
+      Depuis 2020, <strong>Elisalien</strong> et <strong>Bak&ucirc;</strong> font se rencontrer leurs pratiques musicales et visuelles dans un live A/V, &agrave; la crois&eacute;e du concert et de l&rsquo;exp&eacute;rience sensorielle.
+    </p>
+    <p class="concept-text">
+      Le projet <strong>Phase(s)</strong> explore des th&egrave;mes autour des avatars et de l&rsquo;introspection. &Agrave; l&rsquo;aide de dessins, d&rsquo;animations, et de l&rsquo;int&eacute;gration de la captation live aux visuels, l&rsquo;univers intime de Bak&ucirc; est pr&eacute;sent&eacute; par ces diff&eacute;rentes versions d&rsquo;elle-m&ecirc;me, de la 2D &agrave; la 3D.
+    </p>
+    <p class="concept-text">
+      La musique, qui se veut plus exp&eacute;rimentale que sur les pr&eacute;c&eacute;dents projets de Bak&ucirc;, est profonde et ambiante. Explorer les possibilit&eacute;s techniques auditives et sc&eacute;nographiques les plus immersives est un des objectifs principaux de ce projet &mdash; <strong>envelopper le spectateur</strong> dans cet univers, le mettre au plus pr&egrave;s de la cr&eacute;ation et de l&rsquo;enveloppe sonore et visuelle.
+    </p>
+
+    <div class="concept-keywords">
+      <span class="keyword">avatar</span>
+      <span class="keyword">transidentit&eacute;</span>
+      <span class="keyword">dessin</span>
+      <span class="keyword">glitch</span>
+      <span class="keyword">exp&eacute;rimental</span>
+      <span class="keyword">Resolume</span>
+      <span class="keyword">Ableton Live</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ ARTISTES ═══════ -->
+  <section id="artists">
+    <div class="section-tag">// 02 &mdash; artistes</div>
+    <h2 class="section-title">LE DUO</h2>
+
+    <div class="artists-grid">
+
+      <!-- BAKÛ -->
+      <div class="artist-card">
+        <div class="artist-img-slot"><img src="assets/baku.png" alt="Bakû en live" onerror="this.style.display='none'"><div class="slot-label"><span>[ PHOTO BAK&Ucirc; ]</span></div></div>
+        <h3 class="artist-name">BAK&Ucirc;</h3>
+        <div class="artist-role">Musique &amp; Dessin</div>
+        <p class="artist-bio">
+          Artiste-productrice explorant une musique &eacute;lectronique sombre, sensorielle et insaisissable. &Agrave; la crois&eacute;e de multiples influences, elle refuse les &eacute;tiquettes et trace une voie singuli&egrave;re entre basses profondes, rythmiques en tension et textures &eacute;th&eacute;r&eacute;es. Sa musique, entre r&ecirc;ve et dystopie, plonge l'auditeur dans un voyage hypnotique o&ugrave; l'intensit&eacute; brute c&ocirc;toie la fragilit&eacute; des &eacute;motions.
+        </p>
+        <p class="artist-bio">
+          Fondatrice de <strong style="color:var(--rose);font-weight:400;">8raw</strong>, label ind&eacute;pendant fran&ccedil;ais d&eacute;di&eacute; aux sons bruts et aux exp&eacute;riences audiovisuelles singuli&egrave;res. Entre musique &eacute;lectronique, dub et exp&eacute;rimentation, 8raw porte une vision radicale de la cr&eacute;ation sonore o&ugrave; chaque sortie est pens&eacute;e comme un objet artistique &agrave; part enti&egrave;re.
+        </p>
+        <div class="artist-links">
+          <a href="https://eight8raw.com/" target="_blank" rel="noopener" class="artist-link">8raw</a>
+          <a href="https://bakdub.bandcamp.com/music" target="_blank" rel="noopener" class="artist-link">Bandcamp</a>
+          <a href="https://www.youtube.com/c/bak%C3%BBdub" target="_blank" rel="noopener" class="artist-link">YouTube</a>
+          <a href="https://soundcloud.com/bakuphene" target="_blank" rel="noopener" class="artist-link">SoundCloud</a>
+        </div>
+      </div>
+
+      <!-- ELISALIEN -->
+      <div class="artist-card">
+        <div class="artist-img-slot"><img src="assets/elisalien.jpg" alt="Elisalien" onerror="this.style.display='none'"><div class="slot-label"><span>[ PHOTO ELISALIEN ]</span></div></div>
+        <h3 class="artist-name">ELISALIEN</h3>
+        <div class="artist-role">Visuels temps r&eacute;el &amp; R&eacute;gie vid&eacute;o</div>
+        <p class="artist-bio">
+          Artiste num&eacute;rique et technicienne vid&eacute;o aux multiples casquettes, Elisalien navigue entre cr&eacute;ation et technique au service du spectacle vivant. Active dans le concert, le th&eacute;&acirc;tre et la performance A/V, elle utilise de nombreuses techniques allant du traditionnel au num&eacute;rique. Membre du Collectif Neon Live, elle collabore avec Bak&ucirc; depuis 2020 en live A/V et r&eacute;alisation de clips vid&eacute;o.
+        </p>
+        <div class="artist-links">
+          <a href="https://www.instagram.com/elisalien/" target="_blank" rel="noopener" class="artist-link">Instagram</a>
+          <a href="https://www.elisalien.com" target="_blank" rel="noopener" class="artist-link">elisalien.com</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ VIDÉO ═══════ -->
+  <section id="video">
+    <div class="section-tag">// 03 &mdash; vid&eacute;o</div>
+    <h2 class="section-title">CLIPS &amp; CAPTATION</h2>
+
+    <div class="video-grid">
+
+      <div class="video-card featured">
+        <div class="video-placeholder" style="position:relative;cursor:pointer;" onclick="window.open('https://www.youtube.com/watch?v=JTdg_ErkeMM','_blank')">
+          <img src="assets/plasma.png" alt="Bak&ucirc; Live" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+            <span style="font-family:var(--font-mono);font-size:0.65rem;color:#fff;letter-spacing:0.15em;">&#9654; YOUTUBE</span>
+          </div>
+        </div>
+        <div class="video-info">
+          <div class="video-label">Captation live</div>
+          <div class="video-title">Bak&ucirc; &mdash; Live</div>
+          <a href="https://www.youtube.com/watch?v=JTdg_ErkeMM" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.58rem;color:var(--text-dim);text-decoration:none;opacity:0.5;transition:opacity 0.3s;display:inline-block;margin-top:6px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">&#9654; Voir sur YouTube</a>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-placeholder" style="position:relative;cursor:pointer;" onclick="window.open('https://www.youtube.com/watch?v=','_blank')">
+          <img src="assets/imissyou.png" alt="I Miss You" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+            <span style="font-family:var(--font-mono);font-size:0.65rem;color:#fff;letter-spacing:0.15em;">&#9654; YOUTUBE</span>
+          </div>
+        </div>
+        <div class="video-info">
+          <div class="video-label">Trilogie &bull; Clip 01</div>
+          <div class="video-title">I Miss You</div>
+          <a href="https://www.youtube.com/watch?v=" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.58rem;color:var(--text-dim);text-decoration:none;opacity:0.5;transition:opacity 0.3s;display:inline-block;margin-top:6px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">&#9654; Voir sur YouTube</a>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-placeholder" style="position:relative;cursor:pointer;" onclick="window.open('https://www.youtube.com/watch?v=','_blank')">
+          <img src="assets/runaway.png" alt="Runaway" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+            <span style="font-family:var(--font-mono);font-size:0.65rem;color:#fff;letter-spacing:0.15em;">&#9654; YOUTUBE</span>
+          </div>
+        </div>
+        <div class="video-info">
+          <div class="video-label">Trilogie &bull; Clip 02</div>
+          <div class="video-title">Runaway</div>
+          <a href="https://www.youtube.com/watch?v=" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.58rem;color:var(--text-dim);text-decoration:none;opacity:0.5;transition:opacity 0.3s;display:inline-block;margin-top:6px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">&#9654; Voir sur YouTube</a>
+        </div>
+      </div>
+
+      <div class="video-card featured">
+        <div class="video-placeholder" style="position:relative;cursor:pointer;" onclick="window.open('https://www.youtube.com/watch?v=','_blank')">
+          <img src="assets/mortrose.png" alt="MORT ROSE" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none'">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+            <span style="font-family:var(--font-mono);font-size:0.65rem;color:#fff;letter-spacing:0.15em;">&#9654; YOUTUBE</span>
+          </div>
+        </div>
+        <div class="video-info">
+          <div class="video-label">Trilogie &bull; Clip 03 &mdash; &#127942; 3e Chroma Awards</div>
+          <div class="video-title">MORT ROSE</div>
+          <a href="https://www.youtube.com/watch?v=" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.58rem;color:var(--text-dim);text-decoration:none;opacity:0.5;transition:opacity 0.3s;display:inline-block;margin-top:6px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">&#9654; Voir sur YouTube</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ DATES ═══════ -->
+  <section id="dates">
+    <div class="section-tag">// 04 &mdash; calendrier</div>
+    <h2 class="section-title">DATES 2026</h2>
+
+    <ul class="dates-list">
+      <li>
+        <span class="date-when">02.05</span>
+        <span class="date-where">Le Ferailleur &mdash; Nantes</span>
+      </li>
+      <li>
+        <span class="date-when">11.06</span>
+        <span class="date-where">People Are Strange</span>
+      </li>
+      <li>
+        <span class="date-when">13.06</span>
+        <span class="date-where">4 &Eacute;cluses &mdash; Dunkerque</span>
+      </li>
+      <li>
+        <span class="date-when">20.06</span>
+        <span class="date-where">Freemusic Festival</span>
+      </li>
+      <li>
+        <span class="date-when">28.06</span>
+        <span class="date-where">Rencontres et Racines</span>
+      </li>
+      <li>
+        <span class="date-when">03.07</span>
+        <span class="date-where">ERVA</span>
+      </li>
+      <li>
+        <span class="date-when">04.07</span>
+        <span class="date-where">Ch&acirc;teau Perch&eacute;</span>
+      </li>
+      <li>
+        <span class="date-when">01.08</span>
+        <span class="date-where">Foreztival</span>
+        <span class="date-tag">LIVE A/V</span>
+      </li>
+      <li>
+        <span class="date-when">14.09</span>
+        <span class="date-where">R&eacute;sidence &Eacute;clats d'Aura &mdash; LabLab</span>
+        <span class="date-tag">R&Eacute;SIDENCE</span>
+      </li>
+      <li>
+        <span class="date-when">03.10</span>
+        <span class="date-where">La Laiterie &mdash; Strasbourg</span>
+      </li>
+    </ul>
+
+    <h3 class="sub-heading">DATES PASS&Eacute;ES (LIVE A/V)</h3>
+    <div class="past-dates">
+      <span class="past-date">Scararoots</span>
+      <span class="past-date">Vizara Festival</span>
+      <span class="past-date">Alive Dub Festival</span>
+      <span class="past-date">Karnaval Solidaire</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ NEWS & PARTENAIRES ═══════ -->
+  <section id="news">
+    <div class="section-tag">// 05 &mdash; actualit&eacute;s</div>
+    <h2 class="section-title">NEWS &amp; PARTENAIRES</h2>
+
+    <div class="news-grid">
+      <div class="news-card">
+        <span class="news-badge award">Award</span>
+        <p class="news-text"><strong>MORT ROSE</strong> &mdash; 3e place aux Chroma Awards, cat&eacute;gorie clip musical exp&eacute;rimental.</p>
+      </div>
+      <div class="news-card">
+        <span class="news-badge release">Sortie</span>
+        <p class="news-text">Nouvel EP de Bak&ucirc; en cours de production &mdash; sortie pr&eacute;vue 2026.</p>
+      </div>
+      <div class="news-card">
+        <span class="news-badge residency">R&eacute;sidence</span>
+        <p class="news-text">Laur&eacute;at&middot;es <strong>&Eacute;clats d'AURA</strong> &mdash; r&eacute;sidence de cr&eacute;ation A/V au LabLab (AADN), sept. 2026.</p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading">PARTENAIRES</h3>
+    <div class="partners-detail-grid">
+      <a href="https://odgprod.com/artists/baku/" target="_blank" rel="noopener" class="partner-detail">
+        <div class="partner-detail-name">ODG Prod</div>
+        <div class="partner-detail-role">Label &mdash; production et distribution des albums de Bak&ucirc;</div>
+      </a>
+      <a href="https://aftrwrkprod.fr/artists/baku/" target="_blank" rel="noopener" class="partner-detail">
+        <div class="partner-detail-name">aftrwrk</div>
+        <div class="partner-detail-role">Accompagnement artistique, booking et management de Bak&ucirc;</div>
+      </a>
+      <a href="https://neon-live.fr/" target="_blank" rel="noopener" class="partner-detail">
+        <div class="partner-detail-name">Collectif Neon Live</div>
+        <div class="partner-detail-role">Structure associative d'Elisalien &mdash; design sc&eacute;nographique, lumi&egrave;re et op&eacute;ration vid&eacute;o / lumi&egrave;re</div>
+      </a>
+      <a href="https://www.aadn.org/annonce-des-laurates-clats-daura/" target="_blank" rel="noopener" class="partner-detail">
+        <div class="partner-detail-name">AADN / LabLab</div>
+        <div class="partner-detail-role">R&eacute;sidence de cr&eacute;ation A/V &Eacute;clats d'AURA &mdash; soutien &agrave; la recherche artistique et aux arts num&eacute;riques</div>
+      </a>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ CONTACT ═══════ -->
+  <section class="contact-section" id="contact">
+    <div class="section-tag">// 06 &mdash; contact</div>
+    <h2 class="section-title">CONTACT</h2>
+
+    <div class="contact-grid">
+      <div class="contact-block">
+        <h4>BAK&Ucirc;</h4>
+        <a href="https://bakdub.bandcamp.com/music" target="_blank" rel="noopener">bandcamp</a>
+        <a href="https://www.youtube.com/c/bak%C3%BBdub" target="_blank" rel="noopener">youtube</a>
+        <a href="https://soundcloud.com/bakuphene" target="_blank" rel="noopener">soundcloud</a>
+        <a href="https://www.instagram.com/baku.phene/" target="_blank" rel="noopener">instagram</a>
+      </div>
+      <div class="contact-block">
+        <h4>ELISALIEN</h4>
+        <a href="https://www.elisalien.com" target="_blank" rel="noopener">elisalien.com</a>
+        <a href="https://www.instagram.com/elisalien/" target="_blank" rel="noopener">instagram</a>
+      </div>
+      <div class="contact-block">
+        <h4>CONTACT</h4>
+        <a href="mailto:elisa@neon-live.fr">elisa@neon-live.fr</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-line">
+    <span>BAK&Ucirc; &mdash; Live A/V feat. Elisalien &mdash; 2026</span>
+    <span style="display:block;margin-top:10px;font-size:0.62rem;opacity:0.55;letter-spacing:0.08em;">Cr&eacute;dits photos &amp; vid&eacute;o &mdash; Rapha&euml;l Pellet &bull; Elisalien &bull; Bak&ucirc; &bull; Oksana Brossard</span>
+  </div>
+
+</div>
+</div>
+
+<div class="tab-content" id="tab-intention">
+<div class="page-wrapper">
+
+  <!-- ═══════ HERO intention ═══════ -->
+  <section class="hero" id="int-hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-label">&#9655; r&eacute;sidence artistique Ch&acirc;teau &Eacute;ph&eacute;m&egrave;re 2026&ndash;2027</div>
+      <h1 class="hero-title">NOTE <span class="hero-x">&mdash;</span> D&rsquo;INTENTION</h1>
+      <div class="hero-feat">BAK&Ucirc; &amp; Elisalien</div>
+      <div class="hero-subtitle">[ musiques &eacute;lectroniques &bull; arts num&eacute;riques ]</div>
+      <p class="hero-tagline">
+        Une note argument&eacute;e pr&eacute;sentant la <em>pertinence de notre accueil</em> au sein du Ch&acirc;teau &Eacute;ph&eacute;m&egrave;re et les axes de travail sp&eacute;cifiques que nous souhaitons d&eacute;velopper lors de la r&eacute;sidence.
+      </p>
+      <div class="hero-visual" style="padding:0;overflow:hidden;">
+        <img src="assets/vintention.png" alt="Visuel note d'intention" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <span class="hero-visual-text" style="display:none;">[ VISUEL NOTE D&rsquo;INTENTION 1400&times;440px ]</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ PERTINENCE DU LIEU ═══════ -->
+  <section id="int-lieu">
+    <div class="section-tag">// 01 &mdash; pertinence du lieu</div>
+    <h2 class="section-title">POURQUOI CH&Acirc;TEAU &Eacute;PH&Eacute;M&Egrave;RE ?</h2>
+    <p class="concept-text">
+      Phase(s), c&rsquo;est un peu l&rsquo;&eacute;volution naturelle de tout ce que nous avons exp&eacute;riment&eacute; jusqu&rsquo;ici. On garde le m&ecirc;me univers, mais on le fait sortir d&rsquo;un simple eye candy accompagnant un DJ Set explosif. Souhaitant proposer quelque chose de plus proche de nos envies cr&eacute;atives, moins format&eacute; par les attentes d&rsquo;un public surexcit&eacute;, Phase(s) est une parenth&egrave;se, une histoire &agrave; part que l&rsquo;on cherche &agrave; raconter.
+    </p>
+    <p class="concept-text">
+      Fortes de plusieurs exp&eacute;riences, d&rsquo;improvisations et de d&eacute;brouillardise, on aimerait maintenant pouvoir prendre le temps de construire quelque chose de pr&eacute;cis. Et pour cela, on a besoin d&rsquo;un regard ext&eacute;rieur, plus expert et plus technique. L&rsquo;accompagnement d&rsquo;un r&eacute;gisseur technique pendant la r&eacute;sidence serait une ressource directe et rare que nous peinons &agrave; trouver ailleurs.
+    </p>
+    <p class="concept-text">
+      Ce qu&rsquo;on cherche aussi, c&rsquo;est un cadre qui pense le live autrement que le concert ou le DJ set. Phase(s) se destine davantage &agrave; la performance musicale orient&eacute;e arts num&eacute;riques, et Ch&acirc;teau &Eacute;ph&eacute;m&egrave;re semble comprendre cette distinction.
+    </p>
+    <p class="concept-text">
+      On est sensibles &agrave; la mentalit&eacute; du lieu&nbsp;: son rapport au num&eacute;rique comme mati&egrave;re artistique &agrave; part enti&egrave;re, et son ouverture aux projets port&eacute;s par des personnes <strong>FLINTA</strong>. Nous sommes deux personnes qui ont trouv&eacute; dans les ordinateurs et les propositions alternatives un espace de cr&eacute;ation qui leur ressemble. Ch&acirc;teau &Eacute;ph&eacute;m&egrave;re a l&rsquo;air d&rsquo;&ecirc;tre construit sur une logique similaire.
+    </p>
+    <div class="concept-keywords">
+      <span class="keyword">arts num&eacute;riques</span>
+      <span class="keyword">performance musicale</span>
+      <span class="keyword">regard technique</span>
+      <span class="keyword">FLINTA</span>
+      <span class="keyword">hors format</span>
+      <span class="keyword">fabrique num&eacute;rique</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ INTENTION ARTISTIQUE ═══════ -->
+  <section id="int-artistique">
+    <div class="section-tag">// 02 &mdash; intention artistique</div>
+    <h2 class="section-title">L&rsquo;INTENTION</h2>
+    <p class="concept-text">
+      Depuis 2020, <strong>Elisalien</strong> et <strong>Bak&ucirc;</strong> font se rencontrer leurs pratiques musicales et visuelles dans un live A/V, &agrave; la crois&eacute;e du concert et de l&rsquo;exp&eacute;rience sensorielle.
+    </p>
+    <p class="concept-text">
+      Notre projet <strong>Phase(s)</strong> explore des th&egrave;mes autour des avatars et de l&rsquo;introspection. &Agrave; l&rsquo;aide de dessins, d&rsquo;animations, et de l&rsquo;int&eacute;gration de la captation live aux visuels, l&rsquo;univers intime de Bak&ucirc; est pr&eacute;sent&eacute; par ces diff&eacute;rentes versions d&rsquo;elle-m&ecirc;me, de la 2D &agrave; la 3D.
+    </p>
+    <p class="concept-text">
+      La musique, qui se veut plus exp&eacute;rimentale que sur les pr&eacute;c&eacute;dents projets de Bak&ucirc;, est profonde et ambiante. Explorer les possibilit&eacute;s techniques auditives et sc&eacute;nographiques les plus enveloppantes est un des objectifs principaux de ce projet&nbsp;: on veut pouvoir faire entrer le spectateur dans cet univers, le mettre au plus pr&egrave;s de la cr&eacute;ation, de l&rsquo;enveloppe sonore et visuelle.
+    </p>
+    <p class="concept-text">
+      Comment le num&eacute;rique, la cr&eacute;ation, influent notre vision de nous-m&ecirc;mes&nbsp;? Bak&ucirc; est &agrave; la fois mod&egrave;le et artiste, autrice et sujet. Sa vision d&rsquo;elle-m&ecirc;me fluctue au rythme des questions autour du cynisme de notre &eacute;poque, de la transidentit&eacute;, la recherche de pl&eacute;nitude&hellip;
+    </p>
+    <div class="concept-keywords">
+      <span class="keyword">avatar</span>
+      <span class="keyword">transidentit&eacute;</span>
+      <span class="keyword">dessin</span>
+      <span class="keyword">glitch</span>
+      <span class="keyword">exp&eacute;rimental</span>
+      <span class="keyword">Resolume</span>
+      <span class="keyword">Ableton Live</span>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ PROGRAMME DE TRAVAIL ═══════ -->
+  <section id="int-travail">
+    <div class="section-tag">// 03 &mdash; programme de travail</div>
+    <h2 class="section-title">AXES DE LA R&Eacute;SIDENCE</h2>
+    <p class="concept-text">
+      En septembre 2026, nous d&eacute;butons une r&eacute;sidence au LabLab (AADN), un espace &eacute;galement &eacute;quip&eacute; pour la projection sur grand format. Nous y entamerons un travail sur l&rsquo;int&eacute;gration de la captation live aux visuels, l&rsquo;exploration d&rsquo;outils de motion capture, et la communication son/vid&eacute;o via OSC. La r&eacute;sidence au Ch&acirc;teau &Eacute;ph&eacute;m&egrave;re s&rsquo;inscrirait dans la continuit&eacute; directe de ce chantier.
+    </p>
+
+    <ul class="dates-list" style="max-width:800px;margin-top:24px;">
+      <li style="align-items:flex-start;padding:20px 0;gap:20px;">
+        <span class="date-when" style="color:var(--rose);min-width:72px;font-size:0.65rem;padding-top:3px;">01</span>
+        <div>
+          <div style="font-family:var(--font-pixel);font-size:0.72rem;color:var(--text-bright);margin-bottom:8px;letter-spacing:0.05em;">INTERACTION SON / VID&Eacute;O VIA OSC</div>
+          <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.75;">Affiner la r&eacute;ponse visuelle par rapport &agrave; la musique&nbsp;: la rendre plus pr&eacute;cise, plus lisible, plus intentionnelle. Travailler les protocoles OSC entre Ableton Live et Resolume pour que le dialogue son/image soit vraiment pilot&eacute;, pas subi.</div>
+        </div>
+      </li>
+      <li style="align-items:flex-start;padding:20px 0;gap:20px;">
+        <span class="date-when" style="color:var(--rose);min-width:72px;font-size:0.65rem;padding-top:3px;">02</span>
+        <div>
+          <div style="font-family:var(--font-pixel);font-size:0.72rem;color:var(--text-bright);margin-bottom:8px;letter-spacing:0.05em;">INT&Eacute;GRATION DE LA CAPTATION LIVE</div>
+          <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.75;">Travailler sur la pr&eacute;sence de Bak&ucirc; &agrave; l&rsquo;image en temps r&eacute;el&nbsp;: la faire dialoguer avec les animations et les dessins dans le flux visuel, trouver le bon &eacute;quilibre entre captation brute et traitement num&eacute;rique.</div>
+        </div>
+      </li>
+      <li style="align-items:flex-start;padding:20px 0;gap:20px;">
+        <span class="date-when" style="color:var(--rose);min-width:72px;font-size:0.65rem;padding-top:3px;">03</span>
+        <div>
+          <div style="font-family:var(--font-pixel);font-size:0.72rem;color:var(--text-bright);margin-bottom:8px;letter-spacing:0.05em;">MOTION CAPTURE</div>
+          <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.75;">Explorer les outils de motion capture test&eacute;s au LabLab dans un espace diff&eacute;remment &eacute;quip&eacute;, et voir ce que &ccedil;a change &agrave; l&rsquo;&eacute;chelle du plateau et du format de performance.</div>
+        </div>
+      </li>
+      <li style="align-items:flex-start;padding:20px 0;gap:20px;">
+        <span class="date-when" style="color:var(--rose);min-width:72px;font-size:0.65rem;padding-top:3px;">04</span>
+        <div>
+          <div style="font-family:var(--font-pixel);font-size:0.72rem;color:var(--text-bright);margin-bottom:8px;letter-spacing:0.05em;">SPATIALISATION AUDIO</div>
+          <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.75;">Adapter la diffusion &agrave; un syst&egrave;me multicanal pour que l&rsquo;enveloppe sonore soit pens&eacute;e spatialement&nbsp;: circulation des fr&eacute;quences, positionnement des textures et des basses comme &eacute;l&eacute;ments narratifs &agrave; part enti&egrave;re.</div>
+        </div>
+      </li>
+    </ul>
+
+    <p class="concept-text" style="margin-top:40px;">
+      Une restitution publique est envisageable &agrave; la fin de la p&eacute;riode de r&eacute;sidence ou pour une date ult&eacute;rieure.
+    </p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ═══════ ÉTAT D'AVANCEMENT ═══════ -->
+  <section id="int-avancement">
+    <div class="section-tag">// 04 &mdash; &eacute;tat d&rsquo;avancement</div>
+    <h2 class="section-title">O&Ugrave; EN EST LE PROJET ?</h2>
+    <p class="concept-text">
+      Le duo <strong>Bak&ucirc; / Elisalien</strong> dispose d&rsquo;un corpus solide&nbsp;: plusieurs dates de live A/V (Scararoots, Vizara Festival, Alive Dub Festival, Le Ferra&iuml;lleur Nantes&hellip;), une trilogie de clips vid&eacute;o dont <strong>MORT ROSE</strong> (3e prix Chroma Awards, cat&eacute;gorie clip exp&eacute;rimental), et une r&eacute;sidence obtenue &agrave; l&rsquo;AADN <em>&Eacute;clats d&rsquo;Aura</em> (LabLab, septembre 2026). Le projet est port&eacute; par le label <em>ODG Prod</em> et accompagn&eacute; par la structure de booking et management <em>aftrwrk</em>.
+    </p>
+
+    <div class="news-grid" style="margin-top:32px;">
+      <div class="news-card">
+        <span class="news-badge award">Award</span>
+        <p class="news-text"><strong>MORT ROSE</strong> 3e place aux Chroma Awards, cat&eacute;gorie clip musical exp&eacute;rimental.</p>
+      </div>
+      <div class="news-card">
+        <span class="news-badge residency">R&eacute;sidence</span>
+        <p class="news-text">Laur&eacute;at&middot;es <strong>&Eacute;clats d&rsquo;AURA</strong> r&eacute;sidence de cr&eacute;ation A/V au LabLab (AADN), sept. 2026.</p>
+      </div>
+      <div class="news-card">
+        <span class="news-badge release">Partenaires</span>
+        <p class="news-text"><strong>ODG Prod</strong> (label) &bull; <strong>aftrwrk</strong> (booking &amp; management) &bull; <strong>Collectif Neon Live</strong></p>
+      </div>
+    </div>
+
+    <h3 class="sub-heading" style="margin-top:56px;">NOUVEAU MAT&Eacute;RIAU EN COURS</h3>
+    <p class="concept-text">
+      Clip tourn&eacute; lors d&rsquo;une r&eacute;sidence de cr&eacute;ation avec le dispositif Echo&nbsp;:
+    </p>
+
+    <div class="video-card featured" style="margin-top:16px;max-width:800px;">
+      <iframe class="video-embed"
+        src="https://www.youtube.com/embed/yhr_K0xO5zY"
+        title="Night Walk Bak&ucirc;"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen loading="lazy"></iframe>
+      <div class="video-info">
+        <div class="video-label">Nouveau mat&eacute;riau &bull; R&eacute;sidence Echo</div>
+        <div class="video-title">Night Walk</div>
+        <a href="https://youtu.be/yhr_K0xO5zY" target="_blank" rel="noopener" style="font-family:var(--font-mono);font-size:0.58rem;color:var(--text-dim);text-decoration:none;opacity:0.5;transition:opacity 0.3s;display:inline-block;margin-top:6px;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">&#9654; Voir sur YouTube</a>
+      </div>
+    </div>
+
+    <div style="margin-top:80px;padding:40px 0 80px;border-top:1px solid rgba(139,92,246,0.08);display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;">
+      <div style="font-family:var(--font-mono);font-size:0.65rem;color:var(--text-dim);line-height:2;opacity:0.65;">
+        <span style="color:var(--text-bright);font-size:0.68rem;">BAK&Ucirc; Live A/V feat. Elisalien</span><br>
+        Contact&nbsp;: aftrwrk &bull; aftrwrkprod.fr<br>
+        Structure&nbsp;: 8raw / Collectif Neon Live<br>
+        <span style="font-size:0.55rem;opacity:0.45;">Appel &agrave; candidatures Ch&acirc;teau &Eacute;ph&eacute;m&egrave;re 2026&ndash;2027</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+</div>
+
+<script>
+(function(){
+  // ── TAB SWITCHING ──
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var tabContents = document.querySelectorAll('.tab-content');
+  var navDossier = document.getElementById('nav-dots-dossier');
+  var navIntention = document.getElementById('nav-dots-intention');
+
+  function switchTab(tabKey) {
+    var targetId = 'tab-' + tabKey;
+    tabContents.forEach(function(tc) { tc.classList.remove('active'); });
+    tabBtns.forEach(function(tb) { tb.classList.remove('active'); });
+    var target = document.getElementById(targetId);
+    if (target) target.classList.add('active');
+    tabBtns.forEach(function(tb) {
+      if (tb.dataset.tab === tabKey) tb.classList.add('active');
+    });
+    // Switch nav dots
+    if (tabKey === 'dossier') {
+      navDossier.style.display = 'flex';
+      navIntention.style.display = 'none';
+    } else {
+      navDossier.style.display = 'none';
+      navIntention.style.display = 'flex';
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() { switchTab(btn.dataset.tab); });
+  });
+
+  // ── NAV DOTS generic handler ──
+  function setupNavDots(navEl, containerSelector) {
+    var dots = navEl.querySelectorAll('.nav-dot');
+    dots.forEach(function(dot) {
+      dot.addEventListener('click', function() {
+        var el = document.getElementById(dot.dataset.target);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    var sections = Array.from(document.querySelectorAll(containerSelector + ' section[id]'));
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          var idx = sections.indexOf(entry.target);
+          dots.forEach(function(d) { d.classList.remove('active'); });
+          if (dots[idx]) dots[idx].classList.add('active');
+        }
+      });
+    }, { threshold: 0.35 });
+    sections.forEach(function(s) { obs.observe(s); });
+  }
+
+  setupNavDots(navDossier, '#tab-dossier');
+  setupNavDots(navIntention, '#tab-intention');
+})();
+</script>
+</body>
+</html>
