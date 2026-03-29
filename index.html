@@ -746,6 +746,76 @@ a.partner-detail:hover .partner-detail-name::after {
   color: var(--violet);
   border-bottom-color: var(--violet);
 }
+/* intention tab button gets a special treatment */
+.tab-btn[data-tab="intention"] {
+  color: var(--rose);
+  border-bottom-color: rgba(244,114,182,0.3);
+}
+.tab-btn[data-tab="intention"]:hover {
+  color: var(--rose-hot);
+  border-bottom-color: var(--rose-hot);
+}
+.tab-btn[data-tab="intention"].active {
+  color: var(--rose-hot);
+  border-bottom-color: var(--rose-hot);
+}
+.tab-btn[data-tab="intention"]::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px; height: 3px;
+  background: linear-gradient(90deg, var(--rose), var(--violet));
+  filter: blur(3px);
+  opacity: 0.5;
+}
+
+/* ── INTENTION CTA ── */
+.intention-cta {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 28px 40px;
+  margin-bottom: 48px;
+  border: 1px solid rgba(244,114,182,0.2);
+  border-left: 3px solid var(--rose-hot);
+  border-radius: 2px;
+  background: rgba(236,72,153,0.04);
+  cursor: pointer;
+  transition: all 0.35s;
+  text-align: left;
+  width: 100%;
+  max-width: 600px;
+}
+.intention-cta:hover {
+  border-color: rgba(244,114,182,0.5);
+  border-left-color: var(--rose-hot);
+  background: rgba(236,72,153,0.08);
+  transform: translateX(6px);
+}
+.intention-cta-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--rose);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.intention-cta-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: 0.1em;
+}
+.intention-cta-sub {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
 .tab-btn.active::after {
   content: '';
   position: absolute;
@@ -1058,7 +1128,7 @@ a.partner-detail:hover .partner-detail-name::after {
         </p>
         <div class="artist-links">
           <a href="https://eight8raw.com/" target="_blank" rel="noopener" class="artist-link">8raw</a>
-          <a href="https://bakdub.bandcamp.com/music" target="_blank" rel="noopener" class="artist-link">Bandcamp</a>
+          <a href="https://eight8raw.com/" target="_blank" rel="noopener" class="artist-link">Site 8raw</a>
           <a href="https://www.youtube.com/c/bak%C3%BBdub" target="_blank" rel="noopener" class="artist-link">YouTube</a>
           <a href="https://soundcloud.com/bakuphene" target="_blank" rel="noopener" class="artist-link">SoundCloud</a>
         </div>
@@ -1281,6 +1351,11 @@ a.partner-detail:hover .partner-detail-name::after {
   </section>
 
   <div class="footer-line">
+    <div class="intention-cta" onclick="document.querySelector('[data-tab=\'intention\']').click()">
+      <div class="intention-cta-label">// suite</div>
+      <div class="intention-cta-title">NOTE D&rsquo;INTENTION &rarr;</div>
+      <div class="intention-cta-sub">Pourquoi Ch&acirc;teau &Eacute;ph&eacute;m&egrave;re &bull; Axes de travail &bull; &Eacute;tat du projet</div>
+    </div>
     <span>BAK&Ucirc; &mdash; Live A/V feat. Elisalien &mdash; 2026</span>
     <span style="display:block;margin-top:10px;font-size:0.62rem;opacity:0.55;letter-spacing:0.08em;">Cr&eacute;dits photos &amp; vid&eacute;o &mdash; Rapha&euml;l Pellet &bull; Elisalien &bull; Bak&ucirc; &bull; Oksana Brossard</span>
   </div>
